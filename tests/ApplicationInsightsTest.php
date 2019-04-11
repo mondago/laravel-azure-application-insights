@@ -8,7 +8,6 @@ use ApplicationInsights\Telemetry_Client;
 use ApplicationInsights\Telemetry_Context;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Orchestra\Testbench\TestCase;
 use Mondago\ApplicationInsights\ApplicationInsights;
 
 class ApplicationInsightsTest extends TestCase

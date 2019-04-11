@@ -36,7 +36,7 @@
                 "Mondago\\ApplicationInsights\\ServiceProvider"
             ],
             "aliases": {
-                "ApplicationInsights": "Mondago\\ApplicationInsights\\Facade"
+                "Insights": "Mondago\\ApplicationInsights\\Facade"
             }
         }
     },

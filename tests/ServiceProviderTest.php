@@ -5,23 +5,11 @@ namespace Mondago\ApplicationInsights\Tests;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Orchestra\Testbench\TestCase;
+use Insights;
 use Mondago\ApplicationInsights\ServiceProvider;
 
 class ServiceProviderTest extends TestCase
 {
-
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     *
-     * @return array
-     */
-    protected function getPackageProviders($app)
-    {
-        return [
-            ServiceProvider::class
-        ];
-    }
 
     /**
      * Check that is loaded correctly by laravel
@@ -63,14 +51,13 @@ class ServiceProviderTest extends TestCase
     {
         $this->app['config']->set(ServiceProvider::DISPLAY_NAME . '.instrumentation_key', 'notarealinstrumentationkey');
 
-        $insights = $this->app['insights'];
-        $this->assertInstanceOf(\Mondago\ApplicationInsights\ApplicationInsights::class, $insights);
-        $this->assertTrue($insights->isEnabled());
+        $this->assertInstanceOf(\Mondago\ApplicationInsights\ApplicationInsights::class, $this->app['insights']);
+        $this->assertTrue(Insights::isEnabled());
 
         $this->expectException(ClientException::class);
-        $insights->shouldThrowExceptions(true);
+        Insights::shouldThrowExceptions(true);
 
-        $insights->trackRequest(new Request(), new Response());
+        Insights::trackRequest(new Request(), new Response());
 
     }
 
