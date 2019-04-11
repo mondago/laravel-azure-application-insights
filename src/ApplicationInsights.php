@@ -35,6 +35,13 @@ class ApplicationInsights
     private $requestMeasurements = [];
 
     /**
+     * Request properties
+     *
+     * @var array
+     */
+    private $requestProperties = [];
+
+    /**
      * ApplicationInsights constructor.
      *
      * @param Telemetry_Client $client
@@ -84,6 +91,8 @@ class ApplicationInsights
             return;
         }
         try {
+            $this->setDefaultRequestProperties($request);
+
             $this->insights->trackRequest(
                 'app ' . $request->getMethod() . ' ' . $request->getUri(),
                 $request->fullUrl(),
@@ -91,7 +100,7 @@ class ApplicationInsights
                 $this->getRequestDurationTime(),
                 $response->status(),
                 $response->isSuccessful(),
-                $this->getRequestProperties($request),
+                $this->getRequestProperties(),
                 $this->requestMeasurements
             );
             $this->insights->flush();
@@ -134,28 +143,44 @@ class ApplicationInsights
     }
 
     /**
-     * Information from the request
+     * Extract default properties from request
      *
      * @param Request $request
-     * @return array
      */
-    private function getRequestProperties(Request $request)
+    private function setDefaultRequestProperties(Request $request)
     {
-        $props = [
-            'url' => $request->fullUrl(),
-            'querystring' => $request->getQueryString(),
-            'ip' => $request->ip(),
-            'user-agent' => $request->userAgent(),
-            'secure' => $request->secure(),
-            'referer' => $request->server->get('referer'),
-            'method' => $request->method()
-        ];
+        $this->setRequestProperty('url', $request->fullUrl());
+        $this->setRequestProperty('querystring', $request->getQueryString());
+        $this->setRequestProperty('ip', $request->ip());
+        $this->setRequestProperty('user-agent', $request->userAgent());
+        $this->setRequestProperty('secure', $request->secure());
+        $this->setRequestProperty('referer', $request->server->get('referer'));
+        $this->setRequestProperty('method', $request->method());
 
         if ($request->route()) {
-            $props['route'] = $request->route()->getName();
+            $this->setRequestProperty('route', $request->route()->getName());
         }
+    }
 
-        return $props;
+    /**
+     *  Set request property
+     *
+     * @param string $key
+     * @param $value
+     */
+    public function setRequestProperty(string $key, $value)
+    {
+        $this->requestProperties[$key] = $value;
+    }
+
+    /**
+     * Information from the request
+     *
+     * @return array
+     */
+    private function getRequestProperties()
+    {
+        return $this->requestProperties;
     }
 
     /**
