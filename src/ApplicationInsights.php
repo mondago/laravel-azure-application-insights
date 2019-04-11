@@ -149,16 +149,16 @@ class ApplicationInsights
      */
     private function setDefaultRequestProperties(Request $request)
     {
-        $this->setRequestProperty('url', $request->fullUrl());
-        $this->setRequestProperty('querystring', $request->getQueryString());
-        $this->setRequestProperty('ip', $request->ip());
-        $this->setRequestProperty('user-agent', $request->userAgent());
-        $this->setRequestProperty('secure', $request->secure());
-        $this->setRequestProperty('referer', $request->server->get('referer'));
-        $this->setRequestProperty('method', $request->method());
+        $this->addRequestProperty('url', $request->fullUrl());
+        $this->addRequestProperty('querystring', $request->getQueryString());
+        $this->addRequestProperty('ip', $request->ip());
+        $this->addRequestProperty('user-agent', $request->userAgent());
+        $this->addRequestProperty('secure', $request->secure());
+        $this->addRequestProperty('referer', $request->server->get('referer'));
+        $this->addRequestProperty('method', $request->method());
 
         if ($request->route()) {
-            $this->setRequestProperty('route', $request->route()->getName());
+            $this->addRequestProperty('route', $request->route()->getName());
         }
     }
 
@@ -168,7 +168,7 @@ class ApplicationInsights
      * @param string $key
      * @param $value
      */
-    public function setRequestProperty(string $key, $value)
+    public function addRequestProperty(string $key, $value)
     {
         $this->requestProperties[$key] = $value;
     }
