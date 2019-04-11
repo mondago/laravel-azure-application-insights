@@ -1,0 +1,51 @@
+{
+    "name": "Mondago/laravel-application-insights",
+    "description": "A Laravel 5 package to send application insights to Microsoft Application Insights",
+    "keywords": [
+        "Mondago",
+        "insights",
+        "analytics",
+        "monitoring",
+        "laravel"
+    ],
+    "homepage": "https://github.com/Mondago/laravel-application-insights",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yanis Kross Yana",
+            "email": "yanis.kross@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "laravel/framework": "^5.8",
+        "microsoft/application-insights": "^0.4.4"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.8",
+        "phpunit/phpunit": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mondago\\ApplicationInsights\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mondago\\ApplicationInsights\\ServiceProvider"
+            ],
+            "aliases": {
+                "ApplicationInsights": "Mondago\\ApplicationInsights\\Facade"
+            }
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mondago\\ApplicationInsights\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
