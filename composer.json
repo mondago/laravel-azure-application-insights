@@ -1,5 +1,5 @@
 {
-    "name": "Mondago/laravel-application-insights",
+    "name": "mondago/laravel-application-insights",
     "description": "A Laravel 5 package to send application insights to Microsoft Application Insights",
     "keywords": [
         "Mondago",
