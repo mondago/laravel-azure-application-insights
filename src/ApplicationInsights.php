@@ -218,4 +218,17 @@ class ApplicationInsights
             throw $e;
         }
     }
+
+
+    /**
+     * Proxy method calls to telemetry client
+     *
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return call_user_func_array([&$this->insights, $name], $arguments);
+    }
 }
