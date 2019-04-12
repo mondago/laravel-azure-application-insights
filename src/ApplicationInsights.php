@@ -5,7 +5,7 @@ namespace Mondago\ApplicationInsights;
 
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApplicationInsights
 {
@@ -98,7 +98,7 @@ class ApplicationInsights
                 $request->fullUrl(),
                 $this->getRequestStartTime(),
                 $this->getRequestDurationTime(),
-                $response->status(),
+                $response->getStatusCode(),
                 $response->isSuccessful(),
                 $this->getRequestProperties(),
                 $this->requestMeasurements
