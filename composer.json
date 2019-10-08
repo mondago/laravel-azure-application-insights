@@ -1,51 +1,51 @@
 {
-    "name": "mondago/laravel-application-insights",
-    "description": "A Laravel 5 package to send application insights to Microsoft Application Insights",
-    "keywords": [
-        "Mondago",
-        "insights",
-        "analytics",
-        "monitoring",
-        "laravel"
-    ],
-    "homepage": "https://github.com/Mondago/laravel-application-insights",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Yanis Kross Yana",
-            "email": "yanis.kross@gmail.com"
-        }
-    ],
-    "require": {
-        "php": "^7.1.3",
-        "laravel/framework": "^5.7",
-        "microsoft/application-insights": "^0.4.4"
-    },
-    "require-dev": {
-        "orchestra/testbench": "~3.8",
-        "phpunit/phpunit": "^8.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "Mondago\\ApplicationInsights\\": "src"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Mondago\\ApplicationInsights\\ServiceProvider"
-            ],
-            "aliases": {
-                "Insights": "Mondago\\ApplicationInsights\\Facade"
-            }
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Mondago\\ApplicationInsights\\Tests\\": "tests"
-        }
-    },
-    "config": {
-        "sort-packages": true
+  "name": "mondago/laravel-application-insights",
+  "description": "A Laravel 5/6 package to send application insights to Microsoft Application Insights",
+  "keywords": [
+    "Mondago",
+    "insights",
+    "analytics",
+    "monitoring",
+    "laravel"
+  ],
+  "homepage": "https://github.com/Mondago/laravel-application-insights",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Yanis Kross Yana",
+      "email": "yanis.kross@gmail.com"
     }
+  ],
+  "require": {
+    "php": "^7.2.0",
+    "laravel/framework": "^6.0",
+    "microsoft/application-insights": "^0.4.4"
+  },
+  "require-dev": {
+    "orchestra/testbench": "~3.8",
+    "phpunit/phpunit": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mondago\\ApplicationInsights\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Mondago\\ApplicationInsights\\ServiceProvider"
+      ],
+      "aliases": {
+        "Insights": "Mondago\\ApplicationInsights\\Facade"
+      }
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mondago\\ApplicationInsights\\Tests\\": "tests"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
 }
