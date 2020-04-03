@@ -17,13 +17,14 @@
     }
   ],
   "require": {
-    "php": "^7.2.0",
-    "laravel/framework": "^6.0",
+    "php": "^7.2.5",
+    "laravel/framework": "^7.0",
     "microsoft/application-insights": "^0.4.4"
   },
   "require-dev": {
-    "orchestra/testbench": "~3.8",
-    "phpunit/phpunit": "^8.1"
+    "orchestra/testbench": "^5.0",
+    "phpunit/phpunit": "^8.5",
+    "nunomaduro/collision": "^4.1"
   },
   "autoload": {
     "psr-4": {
