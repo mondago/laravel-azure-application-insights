@@ -18,5 +18,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Releasing $VERSION ..."
 
   git tag $VERSION
-  git push origin --tags
+  git push origin master
+  git push origin tag $VERSION
 fi
