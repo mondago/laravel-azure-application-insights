@@ -2,7 +2,6 @@
 
 namespace Mondago\ApplicationInsights;
 
-
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -84,8 +83,9 @@ class ApplicationInsights
      *
      * @param Request $request
      * @param Response $response
+     * @param bool $sendAsync
      */
-    public function trackRequest(Request $request, Response $response)
+    public function trackRequest(Request $request, Response $response, bool $sendAsync = false)
     {
         if (!$this->isEnabled()) {
             return;
@@ -103,7 +103,7 @@ class ApplicationInsights
                 $this->getRequestProperties(),
                 $this->requestMeasurements
             );
-            $this->insights->flush();
+            $this->insights->flush([], $sendAsync);
 
         } catch (\Exception $e) {
             $this->handleException($e);
@@ -120,7 +120,6 @@ class ApplicationInsights
     {
         $this->requestMeasurements[$key] = $value;
     }
-
 
     /**
      * Start time of the request
@@ -187,8 +186,9 @@ class ApplicationInsights
      * Sends exception to application insights
      *
      * @param \Exception $e
+     * @param bool $sendAsync
      */
-    public function trackException(\Exception $e)
+    public function trackException(\Exception $e, bool $sendAsync = false)
     {
         if (!$this->isEnabled()) {
             return;
@@ -198,7 +198,7 @@ class ApplicationInsights
         try {
 
             $this->insights->trackException($e);
-            $this->insights->flush();
+            $this->insights->flush([], $sendAsync);
 
         } catch (\Exception $e) {
             $this->handleException($e);
@@ -219,7 +219,6 @@ class ApplicationInsights
         }
     }
 
-
     /**
      * Proxy method calls to telemetry client
      *
@@ -229,6 +228,6 @@ class ApplicationInsights
      */
     public function __call($name, $arguments)
     {
-        return call_user_func_array([&$this->insights, $name], $arguments);
+        return call_user_func_array([ & $this->insights, $name], $arguments);
     }
 }
