@@ -10,13 +10,13 @@ Add the following to your _composer.json_ file:
 "repositories": [
     {
         "type": "git",
-        "url": "https://repo.mondago.com/Web/Libraries/laravel-application-insights"
+        "url": "https://github.com/mondago/laravel-azure-application-insights"
     }
 ],
 ```
 and require it by adding the following line to your _composer.json_ file under "require":
 ```
-"mondago/laravel-application-insights": "^0.0.1"
+"mondago/laravel-application-insights": "^0.3.2"
 ```
 
 
