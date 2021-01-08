@@ -203,7 +203,28 @@ class ApplicationInsights
         } catch (\Exception $e) {
             $this->handleException($e);
         }
+    }
 
+    /**
+     * Sends dependency to application insights
+     *
+     * @param string $name - The dependency name
+     * @param int $durationInMilliseconds - The duration of the dependency, in milliseconds
+     * @param string $type - The dependency type
+     * @param array|null $properties - An array of name to value pairs to set
+     */
+    public function trackDependency(string $name, int $durationInMilliseconds, string $type = "", array $properties = null)
+    {
+        if (!$this->isEnabled()) {
+            return;
+        }
+
+        try {
+            $this->insights->trackDependency($name, $type, null, null, $durationInMilliseconds, true, null, $properties);
+            $this->insights->flush([]);
+        } catch (\Exception $e) {
+            $this->handleException($e);
+        }
     }
 
     /**
