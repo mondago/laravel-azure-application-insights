@@ -2,7 +2,6 @@
 
 namespace Mondago\ApplicationInsights\Tests;
 
-
 use ApplicationInsights\Channel\Telemetry_Channel;
 use ApplicationInsights\Telemetry_Client;
 use ApplicationInsights\Telemetry_Context;
@@ -20,18 +19,18 @@ class ApplicationInsightsTest extends TestCase
         $telemetry->shouldNotReceive('flush');
         $telemetry->shouldNotReceive('trackRequest');
         $telemetry->shouldNotReceive('trackException');
+        $telemetry->shouldNotReceive('trackDependency');
         $telemetry->shouldNotReceive('getContext');
-
 
         $insights = new ApplicationInsights($telemetry, 'notaninstrumentationkey', false);
         $insights->shouldThrowExceptions(true);
 
         $insights->trackRequest(new Request(), new Response());
         $insights->trackException(new \Exception("test"));
+        $insights->trackDependency('external', 123);
 
         $this->assertFalse($insights->isEnabled());
     }
-
 
     public function test_that_it_handles_enabled_correctly()
     {
@@ -47,16 +46,17 @@ class ApplicationInsightsTest extends TestCase
         $telemetry = \Mockery::mock(Telemetry_Client::class);
         $telemetry->shouldReceive('getContext')->once()->andReturn($telemetryContext);
         $telemetry->shouldReceive('getChannel')->once()->andReturn($telemetryChannel);
-        $telemetry->shouldReceive('flush')->atLeast()->twice()->andReturn(null);
+        $telemetry->shouldReceive('flush')->atLeast()->times(3)->andReturn(null);
         $telemetry->shouldReceive('trackRequest')->once()->andReturn(null);
         $telemetry->shouldReceive('trackException')->once()->with($exception)->andReturn(null);
-
+        $telemetry->shouldReceive('trackDependency')->once()->andReturn(null);
 
         $insights = new ApplicationInsights($telemetry, $key);
         $insights->shouldThrowExceptions(true);
 
         $insights->trackRequest(new Request(), new Response());
         $insights->trackException($exception);
+        $insights->trackDependency('external', 123);
 
         $this->assertTrue($insights->isEnabled());
     }
