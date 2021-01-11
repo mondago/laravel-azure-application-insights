@@ -3,6 +3,7 @@
 namespace Mondago\ApplicationInsights;
 
 use ApplicationInsights\Telemetry_Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProvider extends LaravelServiceProvider
@@ -17,6 +18,16 @@ class ServiceProvider extends LaravelServiceProvider
         $this->publishes([
             __DIR__ . '/../config/application_insights.php' => config_path('application_insights.php'),
         ]);
+
+        if (config(static::DISPLAY_NAME . '.is_enabled')) {
+            DB::listen(function ($query) {
+                $this->app[static::DISPLAY_NAME]->trackDependency($query->connection->getConfig('host'), $query->time, 'SQL', [
+                    'sql' => $query->sql,
+                    'bindings' => $query->bindings,
+                    'connection' => $query->connectionName,
+                ]);
+            });
+        }
     }
 
     /**
@@ -35,7 +46,6 @@ class ServiceProvider extends LaravelServiceProvider
         });
 
         $this->app->alias(ApplicationInsights::class, static::DISPLAY_NAME);
-
 
     }
 }
