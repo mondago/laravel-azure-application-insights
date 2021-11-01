@@ -104,7 +104,6 @@ class ApplicationInsights
                 $this->requestMeasurements
             );
             $this->insights->flush([], $sendAsync);
-
         } catch (\Exception $e) {
             $this->handleException($e);
         }
@@ -199,7 +198,6 @@ class ApplicationInsights
 
             $this->insights->trackException($e);
             $this->insights->flush([], $sendAsync);
-
         } catch (\Exception $e) {
             $this->handleException($e);
         }
@@ -221,7 +219,6 @@ class ApplicationInsights
 
         try {
             $this->insights->trackDependency($name, $type, null, null, $durationInMilliseconds, true, null, $properties);
-            $this->insights->flush([]);
         } catch (\Exception $e) {
             $this->handleException($e);
         }
@@ -249,6 +246,6 @@ class ApplicationInsights
      */
     public function __call($name, $arguments)
     {
-        return call_user_func_array([ & $this->insights, $name], $arguments);
+        return call_user_func_array([&$this->insights, $name], $arguments);
     }
 }
