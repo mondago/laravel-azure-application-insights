@@ -204,6 +204,28 @@ class ApplicationInsights
     }
 
     /**
+     * Sends event to application insights
+     *
+     * @param string $name
+     * @param array $properties An array of name to value pairs. Use the name as the index and any string as the value.
+     * @param array $measurements An array of name to double pairs. Use the name as the index and any double as the value.
+     * @param bool $sendAsync
+     */
+    public function trackEvent(string $name, array $properties = null, array $measurements = null, bool $sendAsync = false)
+    {
+        if (!$this->isEnabled()) {
+            return;
+        }
+
+        try {
+            $this->insights->trackEvent($name, $properties, $measurements);
+            $this->insights->flush([], $sendAsync);
+        } catch (\Exception $e) {
+            $this->handleException($e);
+        }
+    }
+
+    /**
      * Sends dependency to application insights
      *
      * @param string $name - The dependency name

@@ -21,7 +21,7 @@ class ServiceProvider extends LaravelServiceProvider
 
         if (config(static::DISPLAY_NAME . '.is_enabled')) {
             DB::listen(function ($query) {
-                $this->app[static::DISPLAY_NAME]->trackDependency($query->connection->getConfig('host'), $query->time, 'SQL', [
+                $this->app[static::DISPLAY_NAME]->trackDependency($query->connection->getConfig('host') ?? 'db', $query->time, 'SQL', [
                     'sql' => $query->sql,
                     'bindings' => $query->bindings,
                     'connection' => $query->connectionName,
@@ -46,6 +46,7 @@ class ServiceProvider extends LaravelServiceProvider
         });
 
         $this->app->alias(ApplicationInsights::class, static::DISPLAY_NAME);
+        $this->app->register(EventServiceProvider::class);
 
     }
 }
