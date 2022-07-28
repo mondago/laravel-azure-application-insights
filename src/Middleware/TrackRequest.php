@@ -21,6 +21,6 @@ class TrackRequest
 
 	public function terminate($request, $response)
 	{
-		app('insights')->trackRequest($request, $response, true);
+		app('insights')->trackRequest($request, $response);
 	}
 }
