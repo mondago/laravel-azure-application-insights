@@ -18,7 +18,7 @@ jobs:
       uses: shivammathur/setup-php@2.9.0
       with:
         # Setup PHP version.
-        php-version: 7.4
+        php-version: 8.1
 
     - name: Validate composer.json and composer.lock
       run: composer validate
