@@ -28,3 +28,11 @@ php artisan vendor:publish --provider="Mondago\ApplicationInsights\ServiceProvid
 ## Middleware
 
 As a convenience you may choose to use the `Mondago\ApplicationInsights\Middleware\TrackRequest` middleware which will send the request and response to Application Insights. The middleware utilizes [terminable middleware](https://laravel.com/docs/8.x/middleware#terminable-middleware) from Laravel to ensure that tracking the request doesn't block the response being sent.
+
+## Support Matrix
+
+| Our Version | Laravel Version |
+|-------------|-----------------|
+| ^0.6.0      | ^9.0            |
+| ^0.4.0      | ^8.0            |
+| ^0.3.0      | ^7.0            |
