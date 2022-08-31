@@ -5,6 +5,7 @@ namespace Mondago\ApplicationInsights;
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class ApplicationInsights
 {
@@ -184,10 +185,10 @@ class ApplicationInsights
     /**
      * Sends exception to application insights
      *
-     * @param \Exception $e
+     * @param Throwable $e
      * @param bool $sendAsync
      */
-    public function trackException(\Exception $e, bool $sendAsync = false)
+    public function trackException(Throwable $e, bool $sendAsync = false)
     {
         if (!$this->isEnabled()) {
             return;
