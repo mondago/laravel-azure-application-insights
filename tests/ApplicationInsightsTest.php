@@ -8,6 +8,7 @@ use ApplicationInsights\Telemetry_Context;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Mondago\ApplicationInsights\ApplicationInsights;
+use Symfony\Component\ErrorHandler\Error\FatalError;
 
 class ApplicationInsightsTest extends TestCase
 {
@@ -35,6 +36,12 @@ class ApplicationInsightsTest extends TestCase
     public function test_that_it_handles_enabled_correctly()
     {
         $exception = new \Exception("Test");
+        $fatalError = new FatalError("Test", 2, [
+            'type' => 8,
+            'message' => 'Undefined variable: a',
+            'file' => 'C:\WWW\index.php',
+            'line' => 2
+        ]);
         $key = 'notaninstrumentationkey';
 
         $telemetryContext = \Mockery::mock(Telemetry_Context::class);
@@ -46,9 +53,10 @@ class ApplicationInsightsTest extends TestCase
         $telemetry = \Mockery::mock(Telemetry_Client::class);
         $telemetry->shouldReceive('getContext')->once()->andReturn($telemetryContext);
         $telemetry->shouldReceive('getChannel')->once()->andReturn($telemetryChannel);
-        $telemetry->shouldReceive('flush')->times(2)->andReturn(null);
+        $telemetry->shouldReceive('flush')->times(3)->andReturn(null);
         $telemetry->shouldReceive('trackRequest')->once()->andReturn(null);
         $telemetry->shouldReceive('trackException')->once()->with($exception)->andReturn(null);
+        $telemetry->shouldReceive('trackException')->once()->with($fatalError)->andReturn(null);
         $telemetry->shouldReceive('trackDependency')->once()->andReturn(null);
 
         $insights = new ApplicationInsights($telemetry, $key);
@@ -56,6 +64,7 @@ class ApplicationInsightsTest extends TestCase
 
         $insights->trackRequest(new Request(), new Response());
         $insights->trackException($exception);
+        $insights->trackException($fatalError);
         // This does not and should not call flush.
         $insights->trackDependency('external', 123);
 
