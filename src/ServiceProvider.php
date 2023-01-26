@@ -2,7 +2,9 @@
 
 namespace Mondago\ApplicationInsights;
 
+use ApplicationInsights\Channel\Contracts\Cloud;
 use ApplicationInsights\Telemetry_Client;
+use ApplicationInsights\Telemetry_Context;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
@@ -37,9 +39,16 @@ class ServiceProvider extends LaravelServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/application_insights.php', static::DISPLAY_NAME);
 
-        $this->app->singleton(ApplicationInsights::class, function () {
+        $cloudContext = new Cloud();
+        $cloudContext->setRole(env('WEBSITE_SITE_NAME'));
+        $cloudContext->setRoleInstance(env('WEBSITE_INSTANCE_ID'));
+        $context = new Telemetry_Context();
+        $context->setCloudContext($cloudContext);
+        $client = new Telemetry_Client($context);
+
+        $this->app->singleton(ApplicationInsights::class, function () use ($client) {
             return new ApplicationInsights(
-                new Telemetry_Client(),
+                $client,
                 config(static::DISPLAY_NAME . '.instrumentation_key'),
                 config(static::DISPLAY_NAME . '.is_enabled')
             );
