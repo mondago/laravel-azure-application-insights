@@ -53,7 +53,7 @@ class ApplicationInsightsTest extends TestCase
         $telemetry = \Mockery::mock(Telemetry_Client::class);
         $telemetry->shouldReceive('getContext')->once()->andReturn($telemetryContext);
         $telemetry->shouldReceive('getChannel')->once()->andReturn($telemetryChannel);
-        $telemetry->shouldReceive('flush')->times(3)->andReturn(null);
+        $telemetry->shouldReceive('flush')->times(1)->andReturn(null);
         $telemetry->shouldReceive('trackRequest')->once()->andReturn(null);
         $telemetry->shouldReceive('trackException')->once()->with($exception)->andReturn(null);
         $telemetry->shouldReceive('trackException')->once()->with($fatalError)->andReturn(null);
@@ -63,9 +63,9 @@ class ApplicationInsightsTest extends TestCase
         $insights->shouldThrowExceptions(true);
 
         $insights->trackRequest(new Request(), new Response());
+        // These do not and should not call flush.
         $insights->trackException($exception);
         $insights->trackException($fatalError);
-        // This does not and should not call flush.
         $insights->trackDependency('external', 123);
 
         $this->assertTrue($insights->isEnabled());

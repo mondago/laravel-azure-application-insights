@@ -2,6 +2,7 @@
 
 namespace Mondago\ApplicationInsights;
 
+use ApplicationInsights\Channel\Contracts\User;
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,21 +43,51 @@ class ApplicationInsights
     private $requestProperties = [];
 
     /**
+     * Enable tracking anonymous users by session ID
+     */
+    private $shouldTrackAnonymousUsers = true;
+
+    /**
      * ApplicationInsights constructor.
      *
      * @param Telemetry_Client $client
      * @param string $instrumentationKey
      * @param bool $isEnabled
      */
-    public function __construct(Telemetry_Client $client, string $instrumentationKey, bool $isEnabled = true)
+    public function __construct(Telemetry_Client $client, string $instrumentationKey, bool $isEnabled = true, bool $shouldTrackAnonymousUsers = true)
     {
         $this->insights = $client;
         $this->isEnabled = $isEnabled;
+        $this->shouldTrackAnonymousUsers = $shouldTrackAnonymousUsers;
         if ($this->isEnabled()) {
             $this->insights->getContext()->setInstrumentationKey($instrumentationKey);
             $this->insights->getChannel()->setSendGzipped(true);
         }
         $this->shouldThrowExceptions = false;
+    }
+
+    /**
+     * Sets the anonymous user id
+     * @return void 
+     */
+    public function setAnonymousUserId($userId) {
+        if (!$this->shouldTrackAnonymousUsers) {
+            return;
+        }
+
+        $userContext = $this->insights->getContext()->getUserContext() ?? new User();
+        $userContext->setId($userId);
+        $this->insights->getContext()->setUserContext($userContext);
+    }
+
+    /**
+     * Sets the user id
+     * @return void 
+     */
+    public function setUserId($userId) {
+        $userContext = $this->insights->getContext()->getUserContext() ?? new User();
+        $userContext->setAuthUserId($userId);
+        $this->insights->getContext()->setUserContext($userContext);
     }
 
     /**
@@ -188,17 +219,30 @@ class ApplicationInsights
      * @param Throwable $e
      * @param bool $sendAsync
      */
-    public function trackException(Throwable $e, bool $sendAsync = false)
+    public function trackException(Throwable $e)
     {
         if (!$this->isEnabled()) {
             return;
         }
 
-        # TODO: Exception can happen without a request being involved but it would be good to have request information when that's not the case
         try {
-
             $this->insights->trackException($e);
-            $this->insights->flush([], $sendAsync);
+        } catch (\Exception $e) {
+            $this->handleException($e);
+        }
+    }
+
+    /**
+     * Sends trace message data to application insights
+     */
+    public function trackMessage(string $message, int $severityLevel, array $properties = null)
+    {
+        if (!$this->isEnabled()) {
+            return;
+        }
+
+        try {
+            $this->insights->trackMessage($message, $severityLevel, $properties);
         } catch (\Exception $e) {
             $this->handleException($e);
         }
@@ -257,6 +301,18 @@ class ApplicationInsights
     {
         if ($this->throwsExceptions) {
             throw $e;
+        }
+    }
+
+    /**
+     * Flushes the telemetry data
+     */
+    public function flush()
+    {
+        try {
+            $this->insights->flush([]);
+        } catch (\Exception $e) {
+            $this->handleException($e);
         }
     }
 
