@@ -50,7 +50,8 @@ class ServiceProvider extends LaravelServiceProvider
             return new ApplicationInsights(
                 $client,
                 config(static::DISPLAY_NAME . '.instrumentation_key'),
-                config(static::DISPLAY_NAME . '.is_enabled')
+                config(static::DISPLAY_NAME . '.is_enabled'),
+                config(static::DISPLAY_NAME . '.track_anonymous_users')
             );
         });
 
