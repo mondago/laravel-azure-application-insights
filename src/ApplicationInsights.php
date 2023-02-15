@@ -2,6 +2,7 @@
 
 namespace Mondago\ApplicationInsights;
 
+use ApplicationInsights\Channel\Contracts\Session;
 use ApplicationInsights\Channel\Contracts\User;
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Http\Request;
@@ -54,12 +55,12 @@ class ApplicationInsights
      * @param string $instrumentationKey
      * @param bool $isEnabled
      */
-    public function __construct(Telemetry_Client $client, string $instrumentationKey, bool $isEnabled = true, bool $shouldTrackAnonymousUsers = true)
+    public function __construct(Telemetry_Client $client, ?string $instrumentationKey = null, ?bool $isEnabled = true, ?bool $shouldTrackAnonymousUsers = true)
     {
         $this->insights = $client;
         $this->isEnabled = $isEnabled;
         $this->shouldTrackAnonymousUsers = $shouldTrackAnonymousUsers;
-        if ($this->isEnabled()) {
+        if ($this->isEnabled() && $instrumentationKey !== null) {
             $this->insights->getContext()->setInstrumentationKey($instrumentationKey);
             $this->insights->getChannel()->setSendGzipped(true);
         }
@@ -88,6 +89,20 @@ class ApplicationInsights
         $userContext = $this->insights->getContext()->getUserContext() ?? new User();
         $userContext->setAuthUserId($userId);
         $this->insights->getContext()->setUserContext($userContext);
+    }
+
+    /**
+     * Sets the session id
+     * @return void 
+     */
+    public function setSessionId($sessionId) {
+        if (!$this->shouldTrackAnonymousUsers) {
+            return;
+        }
+
+        $context = $this->insights->getContext()->getSessionContext() ?? new User();
+        $context->setId($sessionId);
+        $this->insights->getContext()->setSessionContext($context);
     }
 
     /**
