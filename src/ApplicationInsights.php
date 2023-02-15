@@ -2,6 +2,7 @@
 
 namespace Mondago\ApplicationInsights;
 
+use ApplicationInsights\Channel\Contracts\Session;
 use ApplicationInsights\Channel\Contracts\User;
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Http\Request;
@@ -88,6 +89,20 @@ class ApplicationInsights
         $userContext = $this->insights->getContext()->getUserContext() ?? new User();
         $userContext->setAuthUserId($userId);
         $this->insights->getContext()->setUserContext($userContext);
+    }
+
+    /**
+     * Sets the session id
+     * @return void 
+     */
+    public function setSessionId($sessionId) {
+        if (!$this->shouldTrackAnonymousUsers) {
+            return;
+        }
+
+        $context = $this->insights->getContext()->getSessionContext() ?? new User();
+        $context->setId($sessionId);
+        $this->insights->getContext()->setSessionContext($context);
     }
 
     /**

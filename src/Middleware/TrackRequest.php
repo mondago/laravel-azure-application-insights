@@ -22,7 +22,9 @@ class TrackRequest
 	public function handle(Request $request, Closure $next)
 	{
 		if ($request->hasSession()) {
+			// In this case, both the user id and session id are equal.
 			$this->insights->setAnonymousUserId($request->session()->getId());
+			$this->insights->setSessionId($request->session()->getId());
 		}
 		return $next($request);
 	}
