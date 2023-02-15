@@ -55,12 +55,12 @@ class ApplicationInsights
      * @param string $instrumentationKey
      * @param bool $isEnabled
      */
-    public function __construct(Telemetry_Client $client, string $instrumentationKey, bool $isEnabled = true, bool $shouldTrackAnonymousUsers = true)
+    public function __construct(Telemetry_Client $client, ?string $instrumentationKey = null, ?bool $isEnabled = true, ?bool $shouldTrackAnonymousUsers = true)
     {
         $this->insights = $client;
         $this->isEnabled = $isEnabled;
         $this->shouldTrackAnonymousUsers = $shouldTrackAnonymousUsers;
-        if ($this->isEnabled()) {
+        if ($this->isEnabled() && $instrumentationKey !== null) {
             $this->insights->getContext()->setInstrumentationKey($instrumentationKey);
             $this->insights->getChannel()->setSendGzipped(true);
         }
