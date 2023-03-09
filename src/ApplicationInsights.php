@@ -2,7 +2,6 @@
 
 namespace Mondago\ApplicationInsights;
 
-use ApplicationInsights\Channel\Contracts\Session;
 use ApplicationInsights\Channel\Contracts\User;
 use ApplicationInsights\Telemetry_Client;
 use Illuminate\Http\Request;

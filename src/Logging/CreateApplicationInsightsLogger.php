@@ -4,8 +4,9 @@ namespace Mondago\ApplicationInsights\Logging;
 
 use Mondago\ApplicationInsights\ApplicationInsights;
 use Mondago\ApplicationInsights\Logging\ApplicationInsightsHandler;
+use Monolog\Level;
 use Monolog\Logger;
- 
+
 class CreateApplicationInsightsLogger
 {
     /**
@@ -14,10 +15,11 @@ class CreateApplicationInsightsLogger
      * @param  array  $config
      * @return \Monolog\Logger
      */
-    public function __invoke(array $config)
+    public function __invoke(array $config): Logger
     {
-        $logLevel = $config['log_level'] ?? Logger::DEBUG;
-        $handler = new ApplicationInsightsHandler(app()->make(ApplicationInsights::class), $logLevel);
+        $logLevel = $config['log_level'] ?? Level::Debug;
+        $client = app()->make(ApplicationInsights::class);
+        $handler = new ApplicationInsightsHandler($client, $logLevel);
         return new Logger('app-insights', [$handler]);
     }
 }
