@@ -15,7 +15,7 @@ class ServiceProvider extends LaravelServiceProvider
     /**
      * Bootstrap the application events.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
             __DIR__ . '/../config/application_insights.php' => config_path('application_insights.php'),
@@ -35,7 +35,7 @@ class ServiceProvider extends LaravelServiceProvider
     /**
      * Register the service provider.
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/application_insights.php', static::DISPLAY_NAME);
 
