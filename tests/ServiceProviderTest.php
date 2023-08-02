@@ -28,7 +28,6 @@ class ServiceProviderTest extends TestCase
         $this->assertTrue($insights->isEnabled());
 
         $this->assertInstanceOf(\Mondago\ApplicationInsights\ApplicationInsights::class, $insights);
-
     }
 
     /**
@@ -44,7 +43,6 @@ class ServiceProviderTest extends TestCase
         $this->assertFalse($insights->isEnabled());
 
         $this->assertInstanceOf(\Mondago\ApplicationInsights\ApplicationInsights::class, $insights);
-
     }
 
     /**
@@ -63,7 +61,6 @@ class ServiceProviderTest extends TestCase
         Insights::shouldThrowExceptions(true);
 
         Insights::trackRequest(new Request(), new Response());
-
     }
 
 
@@ -80,26 +77,25 @@ class ServiceProviderTest extends TestCase
 
         $connection = $this->getConnection();
 
+        $queryTimeAsFloat = 3.34;
+        $expectedQueryTimeAsInt = 3;
+
         Event::dispatch(new QueryExecuted(
             sql: "select * from users where name = ?",
             bindings: "mondy",
-            time: 3.34,
+            time: $queryTimeAsFloat,
             connection: $connection
         ));
 
-        $args = [
+        $insights->shouldHaveReceived('trackDependency', [
             $connection->getConfig('host'),
-            3,
+            $expectedQueryTimeAsInt,
             'SQL',
             [
                 'sql' => 'select * from users where name = ?',
                 'bindings' => 'mondy',
                 'connection' => $connection->getName()
             ]
-        ];
-
-        $insights->shouldHaveReceived('trackDependency', $args);
+        ]);
     }
-
-
 }
