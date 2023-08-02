@@ -142,8 +142,8 @@ class ApplicationInsights
             $this->insights->trackRequest(
                 'app ' . $request->getMethod() . ' ' . $request->getUri(),
                 $request->fullUrl(),
-                $this->getRequestStartTime(),
-                $this->getRequestDurationTime(),
+                intval($this->getRequestStartTime()),
+                intval($this->getRequestDurationTime()),
                 $response->getStatusCode(),
                 $response->isSuccessful(),
                 $this->getRequestProperties(),

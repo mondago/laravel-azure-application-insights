@@ -5,6 +5,7 @@ namespace Mondago\ApplicationInsights;
 use ApplicationInsights\Channel\Contracts\Cloud;
 use ApplicationInsights\Telemetry_Client;
 use ApplicationInsights\Telemetry_Context;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
@@ -22,8 +23,8 @@ class ServiceProvider extends LaravelServiceProvider
         ]);
 
         if (config(static::DISPLAY_NAME . '.is_enabled')) {
-            DB::listen(function ($query) {
-                $this->app[static::DISPLAY_NAME]->trackDependency($query->connection->getConfig('host') ?? 'db', $query->time, 'SQL', [
+            DB::listen(function (QueryExecuted $query) {
+                $this->app[static::DISPLAY_NAME]->trackDependency($query->connection->getConfig('host') ?? 'db', intval($query->time), 'SQL', [
                     'sql' => $query->sql,
                     'bindings' => $query->bindings,
                     'connection' => $query->connectionName,
