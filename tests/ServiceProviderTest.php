@@ -3,9 +3,14 @@
 namespace Mondago\ApplicationInsights\Tests;
 
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Insights;
+use Mondago\ApplicationInsights\ApplicationInsights;
 use Mondago\ApplicationInsights\ServiceProvider;
 
 class ServiceProviderTest extends TestCase
@@ -23,7 +28,6 @@ class ServiceProviderTest extends TestCase
         $this->assertTrue($insights->isEnabled());
 
         $this->assertInstanceOf(\Mondago\ApplicationInsights\ApplicationInsights::class, $insights);
-
     }
 
     /**
@@ -39,7 +43,6 @@ class ServiceProviderTest extends TestCase
         $this->assertFalse($insights->isEnabled());
 
         $this->assertInstanceOf(\Mondago\ApplicationInsights\ApplicationInsights::class, $insights);
-
     }
 
     /**
@@ -58,7 +61,41 @@ class ServiceProviderTest extends TestCase
         Insights::shouldThrowExceptions(true);
 
         Insights::trackRequest(new Request(), new Response());
-
     }
 
+
+    /**
+     * Check it listens to DB correctly
+     * 
+     * @return void
+     */
+    public function test_that_it_listens_to_db_queries()
+    {
+        $this->app['config']->set(ServiceProvider::DISPLAY_NAME . '.instrumentation_key', 'notarealinstrumentationkey');
+
+        $insights = $this->spy(ApplicationInsights::class);
+
+        $connection = $this->getConnection();
+
+        $queryTimeAsFloat = 3.34;
+        $expectedQueryTimeAsInt = 3;
+
+        Event::dispatch(new QueryExecuted(
+            sql: "select * from users where name = ?",
+            bindings: "mondy",
+            time: $queryTimeAsFloat,
+            connection: $connection
+        ));
+
+        $insights->shouldHaveReceived('trackDependency', [
+            $connection->getConfig('host'),
+            $expectedQueryTimeAsInt,
+            'SQL',
+            [
+                'sql' => 'select * from users where name = ?',
+                'bindings' => 'mondy',
+                'connection' => $connection->getName()
+            ]
+        ]);
+    }
 }
