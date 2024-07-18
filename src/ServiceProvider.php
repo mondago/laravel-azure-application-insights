@@ -11,7 +11,7 @@ use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 class ServiceProvider extends LaravelServiceProvider
 {
-    const DISPLAY_NAME = 'insights';
+    const DISPLAY_NAME = 'application_insights';
 
     /**
      * Bootstrap the application events.
@@ -19,7 +19,7 @@ class ServiceProvider extends LaravelServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/application_insights.php' => config_path('application_insights.php'),
+            __DIR__ . '/../config/application_insights.php' => config_path(static::DISPLAY_NAME),
         ]);
 
         if (config(static::DISPLAY_NAME . '.is_enabled')) {
