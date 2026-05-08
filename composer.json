@@ -1,7 +1,7 @@
 {
   "name": "yesdevs/laravel-application-insights",
   "description": "A Laravel 11 package to send application insights to Microsoft Application Insights",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "keywords": [
     "Yesdevs",
     "insights",
@@ -19,7 +19,7 @@
   ],
   "require": {
     "php": "^8.2",
-    "laravel/framework": "^11|^12",
+    "laravel/framework": "^11|^12|^13",
     "mondago/application-insights": "^0.5",
     "monolog/monolog": "^3.9"
   },
