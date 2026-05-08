@@ -1,6 +1,6 @@
 {
   "name": "yesdevs/laravel-application-insights",
-  "description": "A Laravel 11 package to send application insights to Microsoft Application Insights",
+  "description": "A Laravel 11/12/13 package to send application insights to Microsoft Application Insights",
   "version": "1.0.4",
   "keywords": [
     "Yesdevs",
